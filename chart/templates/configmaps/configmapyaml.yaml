@@ -1,0 +1,13 @@
+{{- if and (empty .Values.configFilePath | not) (empty .Values.config | not)  }} 
+{{ $extension := include  "chart.extension" . }}
+{{if or (eq ($extension | upper) "YAML") (eq ($extension | upper)  "YML") }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: {{ template "chart.fullname" . }}
+data:
+  config: |-
+    {{ .Values.config | toYaml | nindent 4 | trim }}
+{{- end }}
+{{- end }}

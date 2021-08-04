@@ -1,0 +1,14 @@
+{
+  "@mss/generator-devsecops": {
+    "lastRunVersion": "2.1.25",
+    "scaffoldGeneratorCategory": "core",
+    "scaffoldGeneratorName": "java-microservice",
+    "scaffoldGeneratorAnswers": {
+      "name": "cerberus-tab-generator-customer-config",
+      "useParent": true,
+      "parentGroup": "com.ibm.sec",
+      "parentArtifact": "mss-spring-boot-app-parent",
+      "parentVersion": "2.3.9"
+    }
+  }
+}

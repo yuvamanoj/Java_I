@@ -1,0 +1,29 @@
+{{- if .Values.route.enabled -}}
+{{- $fullName := include "chart.fullname" . -}}
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "chart.labels" . | nindent 4 }}
+  {{- with .Values.route.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  port:
+    targetPort: {{ default .Values.service.portName .Values.route.targetServicePortName }}
+  {{- if .Values.route.tls.enabled }}
+  tls:
+    termination: {{ default "edge" .Values.route.tls.termination }}
+    insecureEdgeTerminationPolicy: {{ default "Redirect" .Values.route.tls.insecureEdgeTerminationPolicy }}
+  {{- end }}
+  to:
+    kind: {{ default "Service" .Values.route.to.kind }}
+    name: {{ default $fullName  .Values.route.to.name }}
+    weight: {{ default "100" .Values.route.to.weight }}
+  wildcardPolicy: {{ default "None" .Values.route.wildcardPolicy }}
+  {{- with .Values.route.host }}
+  host: {{ . }}
+  {{- end -}}
+{{- end }}

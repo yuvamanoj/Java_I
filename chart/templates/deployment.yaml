@@ -1,0 +1,163 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "chart.fullname" . }}
+  labels:
+    {{- include "chart.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "chart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "chart.selectorLabels" . | nindent 8 }}
+      annotations:
+        {{- include "chart.podAnnotations" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "chart.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        {{- if .Values.graphite.enabled }}
+        - name: prometheus-graphite-bridge
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: stuartc/prometheus-graphite-bridge
+          imagePullPolicy: {{ .Values.graphite.image.pullPolicy }}
+          args: [
+            "--scrape-target", "http://localhost:{{ default "8080" .Values.prometheusScrape.port }}{{ default "/actuator/prometheus" .Values.prometheusScrape.path }}",
+            "--graphite-host", "{{ .Values.graphite.host }}",
+            "--graphite-port", "{{ .Values.graphite.port }}",
+            "--graphite-prefix", "{{ .Values.graphite.prefix }}.{{ include "chart.fullname" . }}",
+            "--retry-count", "300"
+          ]
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 9215
+            initialDelaySeconds: 180
+            periodSeconds: 20
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 9215
+            initialDelaySeconds: 180
+            periodSeconds: 20
+        {{- end }}
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ default 8080 .Values.service.targetPort }}
+              protocol: TCP
+
+          readinessProbe:
+            {{-  toYaml .Values.readinessProbe | nindent 12 }}
+
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+
+          env:
+            {{- with .Values.log }}
+            - name: LOG_LEVEL
+              value: {{ .level }}
+            - name: LOG_FORMAT
+              value: {{ .format }}
+            {{- end }}
+            - name: SPRING_CLOUD_KUBERNETES_CONFIG_ENABLED
+              value: "true"
+            - name: SPRING_CLOUD_KUBERNETES_CONFIG_PATHS
+              value: {{ .Values.configFilePath }}
+            - name: NODEJS_CONFIG_PATH
+              value: {{ .Values.configFilePath }}
+            - name: CONFIG_PATH
+              value: {{ .Values.configFilePath }}
+            - name: KAFKA_SSL_TRUSTSTORE_LOCATION
+              value: {{ default "/opt/app/secrets.d" .Values.secretsDir }}/kafka/kafka.truststore.jks
+            - name: KAFKA_SSL_KEYSTORE_LOCATION
+              value: {{ default "/opt/app/secrets.d" .Values.secretsDir }}/kafka/kafka.client_keystore.jks              
+            # FIXME: Figure out why we can't add the secretName conditional here
+            {{- if .Values.secretName }}
+            - name: SPRING_CLOUD_KUBERNETES_SECRETS_PATHS
+              value: {{ default "/opt/app/secrets.d" .Values.secretsDir }}
+            - name: NODEJS_SECRETS_DIR
+              value: {{ default "/opt/app/secrets.d" .Values.secretsDir }}
+            - name: SECRETS_DIR
+              value: {{ default "/opt/app/secrets.d" .Values.secretsDir }}
+            {{- end }} 
+          volumeMounts:
+            {{- if .Values.secretName }}
+            - name: secret
+              mountPath: {{ default "/opt/app/secrets.d" .Values.secretsDir }}
+              readOnly: true
+            {{- end }}
+            {{- if and (empty .Values.configFilePath | not) (empty .Values.config | not)  }} 
+            - name: config
+              #  mountPath: "/etc/config"
+              mountPath: {{ .Values.configFilePath }}
+              subPath: config
+              readOnly: true
+            {{- end }}
+      volumes:
+       {{- if and (empty .Values.configFilePath | not) (empty .Values.config | not)  }} 
+        - name: config
+          configMap:
+            name: {{ include "chart.fullname" . }}
+        {{- end }}
+      {{- if .Values.secretName }}
+        - name: secret
+          secret:
+            secretName: {{ .Values.secretName }}
+
+            items:
+              - key: DB_PASSWD
+                path: spring.datasource.password
+              - key: DB_URL
+                path: spring.datasource.url
+              - key: GITHUB_TOKEN
+                path: github.auth-token
+              - key: JENKINS_TOKEN
+                path: jenkins.token
+              - key: KAFKA_USERNAME
+                path: app.kafka.username
+              - key: KAFKA_PASSWORD
+                path: app.kafka.password        
+              - key: KAFKA_SSL_KEYSTORE_LOCATION
+                path: kafka/kafka.client_keystore.jks
+              - key: KAFKA_SSL_TRUSTSTORE_LOCATION
+                path: kafka/kafka.truststore.jks
+              - key: SSL_PASSWORD
+                path: spring.kafka.ssl.trust-store-password         
+              - key: SSL_PASSWORD
+                path: spring.kafka.ssl.key-store-password
+              - key: SSL_PASSWORD
+                path: spring.kafka.ssl.key-password
+              - key: KAFKA_SERVER
+                path: spring.kafka.bootstrap-servers
+              - key: LICENSE_KEY
+                path: licence_key
+        {{- end }}
+     {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

@@ -1,0 +1,5 @@
+---
+# Instructions to globally suppress: https://pages.github.ibm.com/managed-security/dept-it/#/systems/devsecops/clair/2/runbooks/globally_suppress_finding
+# Instructions to respond to findings: https://pages.github.ibm.com/managed-security/dept-it/#/systems/devsecops/clair/2/runbooks/respond_to_findings
+# Syntax: https://github.com/arminc/clair-scanner#example-whitelist-yaml-file
+generalwhitelist:

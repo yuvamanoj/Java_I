@@ -1,0 +1,6 @@
+# Instructions to globally suppress: https://pages.github.ibm.com/managed-security/dept-it/#/systems/devsecops/wicked/1/runbooks/globally_suppress_finding
+# Instructions to respond to findings: https://pages.github.ibm.com/managed-security/dept-it/#/systems/devsecops/wicked/1/runbooks/respond_to_findings
+# Syntax: {package}:{version} - {comment}
+automaton:1.11.8 (New version and not exempt)
+logstash-logback-encoder:6.3 (New version and not exempt)
+micrometer-registry-prometheus:1.5.1 (New version and not exempt)

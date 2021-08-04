@@ -1,0 +1,94 @@
+management:
+  endpoint:
+    health:
+      show-details: ALWAYS
+  endpoints:
+    web:
+      exposure:
+        include: "prometheus,health,info"
+
+server:
+  port: 8080
+
+spring:
+  application:
+    name: generator-customer-config
+  liquibase:
+    enabled: true
+    change-log: classpath:db/liquibase-changelog.xml
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    password: ${DB_PASSWD}
+    url: ${DB_URL}
+    username: trydbwriter
+  jpa:
+    hibernate:
+      ddl-auto: none
+    database-platform: org.hibernate.dialect.H2Dialect
+
+  kafka:
+    properties:
+      ssl:
+        endpoint:
+          identification:
+            algorithm:
+      security:
+        protocol: SASL_SSL
+      sasl:
+        mechanism: PLAIN
+        jaas:
+          config: org.apache.kafka.common.security.plain.PlainLoginModule required username="${KAFKA_USERNAME}" password="${KAFKA_PASSWORD}";
+    ssl:
+      trust-store-location: ${KAFKA_SSL_TRUSTSTORE_LOCATION}
+      trust-store-password: ${SSL_PASSWORD}
+      trust-store-type: JKS
+      key-store-location: ${KAFKA_SSL_KEYSTORE_LOCATION}
+      key-store-password: ${SSL_PASSWORD}
+      key-store-type: JKS
+      key-password: ${SSL_PASSWORD}
+    bootstrap-servers: ${KAFKA_SERVER}
+    consumer:
+      group-id:
+      auto-offset-reset: earliest
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer2
+      properties:
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+        spring.json.use.type.headers: false
+        spring.json.trusted.packages: "com.ibm.sec.dtos.*"
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+github:
+  templateOwner: Cloud-Security
+  auth-token: ${GITHUB_TOKEN}
+  githubBaseUrl : https://api.github.ibm.com/
+  generateRepoUsingTemplate : repos/{template_owner}/{template_repo}/generate
+  deleteRepoApi : repos/{owner}/{repo}
+  
+jenkins:
+  username: IAM#shnamde1@in.ibm.com-admin-edit-view
+  jenkins-base-url: https://jenkins-newoperator.cloudtribe-devops-024f02d285327b3efec3badccd07e2a1-0000.us-south.containers.appdomain.cloud/
+  configFileUrl : /job/{template_job_name}/{config_file_name}
+  createJobUrl : /createItem?name={job_name}
+  triggerJenkinsJob : /job/{job_name}/build
+  jenkinsTemplateJob : test-github
+  jenkinsConfigFileName : config.xml
+  deleteJenkinsJob : /job/{job_name}/doDelete
+  token: ${JENKINS_TOKEN}
+
+error-messages:
+  INVALID_URL: "Invalid Url/Network issue, unable to connect"
+  NETWORK_ISSUE: "Unable to connect due to network issue"
+  DATABASE_UNAVAILABLE: "Unable to establish connection with database"
+  PARAMETER_IS_MISSING: " parameter is missing"
+  MEDIA_TYPE_NOT_SUPPORTED: " media type is not supported. Supported media types are "
+  INVALID_USER_ID: "Invalid User Id"
+  PRISMA_URL_UNAVAILABLE: "Prisma url is not available for customer"
+  PRISMA_USERNAME_UNAVAILABLE: "Prisma username is not available for customer"
+  PRISMA_PASSWORD_UNAVAILABLE: "Prisma password is not available for customer"
+  CLUSTER_ID_ALREADY_AVAILABLE: "Cluster id already available in the system"
+
+maxRetry : 10
+custom_error_message: "System encountered unpredictable exception, please retry in some time"
+
+licence_key: ${LICENSE_KEY}

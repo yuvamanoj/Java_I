@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="1" author="gcc">
+        <createTable tableName="terms_and_conditions">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="terms" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="integer">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <insert tableName="terms_and_conditions">
+            <column name="version" value="1"/>
+            <column name="terms" value="Legal copy will be supplied through the General Legal Approval.
+            Visit w3.ibm.com/developer/appservices/get-started/ibm-clearances
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+            Lorem Ipsum has been the industry&apos;s standard dummy text ever since the 1500s, when an unknown
+            printer took a galley of type and scrambled it to make a type specimen book. It has survived not
+            only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
+            It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages,
+            and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+            It is a long established fact that a reader will be distracted by the readable content of a page
+            when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal
+            distribution of letters, as opposed to using Content here, content here, making it look like readable
+            English."/>
+        </insert>
+        <createTable tableName="customers">
+            <column name="id" type="varchar(255)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="first_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone_number" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+            <column name="api_key" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="region" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="resource_group" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="cluster_id" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="platform" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="toolset" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="policy" type="varchar(255)" defaultValue="POC">
+                <constraints nullable="true"/>
+            </column>
+            <column name="t_n_c_check" type="boolean" defaultValue="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_trial_version" type="boolean" defaultValue="true">
+                <constraints nullable="true"/>
+            </column>
+            <column name="is_full_version" type="boolean">
+                <constraints nullable="true"/>
+            </column>
+            <column name="license_key" type="text">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_date_time" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_date_time" type="timestamp">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_by" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="updated_by" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="prisma_url" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="prisma_username" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="prisma_password" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="company_name" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="tnc_id" type="bigint" defaultValue="1">
+                <constraints nullable="false" foreignKeyName="fk_terms_and_conditions" references="terms_and_conditions(id)"/>
+            </column>
+        </createTable>
+        <createTable tableName="tasks">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <insert tableName="tasks">
+            <column name="name" value="PERSIST_NEWUSERDETAILS"/>
+        </insert>
+        <insert tableName="tasks">
+            <column name="name" value="CREATE_REPOINSTALLATION"/>
+        </insert>
+        <insert tableName="tasks">
+            <column name="name" value="CREATE_REPOPOLICY"/>
+        </insert>
+        <insert tableName="tasks">
+            <column name="name" value="CREATE_JENKINSJOB_FOR_INSTALLATION"/>
+        </insert>
+        <insert tableName="tasks">
+            <column name="name" value="CREATE_JENKINSJOB_FOR_UNINSTALLATION"/>
+        </insert>
+        <insert tableName="tasks">
+            <column name="name" value="CREATE_JENKINSJOB_FOR_POLICY"/>
+        </insert>
+        <insert tableName="tasks">
+            <column name="name" value="BUILD_JENKINSJOB_FOR_INSTALLATION"/>
+        </insert>
+        <insert tableName="tasks">
+            <column name="name" value="BUILD_JENKINSJOB_FOR_POLICY"/>
+        </insert>
+        <insert tableName="tasks">
+            <column name="name" value="CREATE_JENKINSJOB_FOR_PRISMA_DASHBOARD_INSTALLATION"/>
+        </insert>
+        <insert tableName="tasks">
+            <column name="name" value="PRISMA_DASHBOARD_INSTALLATION"/>
+        </insert>
+        <insert tableName="tasks">
+            <column name="name" value="BUILD_JENKINSJOB_FOR_UNINSTALLATION"/>
+        </insert>
+        <insert tableName="tasks">
+            <column name="name" value="DELETE_JENKINSJOB_FOR_PRISMA_DASHBOARD"/>
+        </insert>
+        <insert tableName="tasks">
+            <column name="name" value="DELETE_JENKINSJOB_FOR_POLICY"/>
+        </insert>
+        <insert tableName="tasks">
+            <column name="name" value="DELETE_JENKINSJOB_FOR_INSTALLATION"/>
+        </insert>
+        <insert tableName="tasks">
+            <column name="name" value="DELETE_JENKINSJOB_FOR_UNINSTALLATION"/>
+        </insert>
+        <insert tableName="tasks">
+            <column name="name" value="DELETE_GITHUB_FOR_POLICY"/>
+        </insert>
+        <insert tableName="tasks">
+            <column name="name" value="DELETE_GITHUB_FOR_INSTALLATION"/>
+        </insert>
+        <insert tableName="tasks">
+            <column name="name" value="PURGE_CUSTOMER_DB_ENTRY"/>
+        </insert>                                                        
+        <createTable tableName="statuses">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <insert tableName="statuses">
+            <column name="name" value="NOT_STARTED"/>
+        </insert>  
+        <insert tableName="statuses">
+            <column name="name" value="STARTED"/>
+        </insert>              
+        <insert tableName="statuses">
+            <column name="name" value="SUCCESS"/>
+        </insert>
+        <insert tableName="statuses">
+            <column name="name" value="FAILED"/>
+        </insert>
+        <createTable tableName="task_statuses">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_id" type="varchar(255)">
+                <constraints nullable="false" foreignKeyName="fk_customers" references="customers(id)"/>
+            </column>
+            <column name="task_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_tasks" references="tasks(id)"/>
+            </column>
+            <column name="task_name" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_date_time" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="initiated_date_time" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_date_time" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_statuses" references="statuses(id)"/>
+            </column>
+            <column name="status_name" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="retry" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="error" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="2" author="gcc">
+        <createTable tableName="users">
+            <column name="ibm_id" type="varchar(255)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="email" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addColumn tableName="customers">
+            <column name="ibm_id" type="varchar(255)">
+                <constraints nullable="false" foreignKeyName="fk_users" references="users(ibm_id)"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="3" author="gcc">
+        <addColumn tableName="tasks">
+            <column name="customer_view" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        <update tableName="tasks">
+            <column name="customer_view" value="PERSISTING USER DETAILS IN SYSTEM"/>
+            <where>name='PERSIST_NEWUSERDETAILS'</where>
+        </update>
+        <update tableName="tasks">
+            <column name="customer_view" value="SYSTEM PREPARING INSTALLATION COMPONENTS"/>
+            <where>name='CREATE_REPOINSTALLATION'</where>
+        </update>
+        <update tableName="tasks">
+            <column name="customer_view" value="SYSTEM PREPARING POLICY FOR USER"/>
+            <where>name='CREATE_REPOPOLICY'</where>
+        </update>
+        <update tableName="tasks">
+            <column name="customer_view" value="CREATING JENKINS JOB FOR INSTALLATION"/>
+            <where>name='CREATE_JENKINSJOB_FOR_INSTALLATION'</where>
+        </update>
+        <update tableName="tasks">
+            <column name="customer_view" value="CREATING JENKINS JOB FOR UNINSTALLATION"/>
+            <where>name='CREATE_JENKINSJOB_FOR_UNINSTALLATION'</where>
+        </update>
+        <update tableName="tasks">
+            <column name="customer_view" value="CREATING JENKINS JOB FOR PRISMA DASHBOARD INSTALLATION"/>
+            <where>name='CREATE_JENKINSJOB_FOR_PRISMA_DASHBOARD_INSTALLATION'</where>
+        </update>
+        <update tableName="tasks">
+            <column name="customer_view" value="CREATING JENKINS JOB FOR POLICY"/>
+            <where>name='CREATE_JENKINSJOB_FOR_POLICY'</where>
+        </update>
+        <update tableName="tasks">
+            <column name="customer_view" value="BUILDING JENKINS JOB FOR INSTALLATION"/>
+            <where>name='BUILD_JENKINSJOB_FOR_INSTALLATION'</where>
+        </update>
+        <update tableName="tasks">
+            <column name="customer_view" value="BUILD JENKINS JOB FOR POLICY"/>
+            <where>name='BUILD_JENKINSJOB_FOR_POLICY'</where>
+        </update>
+        <update tableName="tasks">
+            <column name="customer_view" value="PRISMA DASHBOARD INSTALLATION"/>
+            <where>name='PRISMA_DASHBOARD_INSTALLATION'</where>
+        </update>
+        <update tableName="tasks">
+            <column name="customer_view" value="BUILDING JENKINS JOB FOR UNINSTALLATION"/>
+            <where>name='BUILD_JENKINSJOB_FOR_UNINSTALLATION'</where>
+        </update>
+        <update tableName="tasks">
+            <column name="customer_view" value="DELETING JENKINS JOB FOR PRISMA DASHBOARD"/>
+            <where>name='DELETE_JENKINSJOB_FOR_PRISMA_DASHBOARD'</where>
+        </update>
+        <update tableName="tasks">
+            <column name="customer_view" value="DELETING JENKINS JOB FOR POLICY"/>
+            <where>name='DELETE_JENKINSJOB_FOR_POLICY'</where>
+        </update>
+        <update tableName="tasks">
+            <column name="customer_view" value="DELETING JENKINS JOB FOR INSTALLATION"/>
+            <where>name='DELETE_JENKINSJOB_FOR_INSTALLATION'</where>
+        </update>
+        <update tableName="tasks">
+            <column name="customer_view" value="DELETING JENKINS JOB FOR UNINSTALLATION"/>
+            <where>name='DELETE_JENKINSJOB_FOR_UNINSTALLATION'</where>
+        </update>
+        <update tableName="tasks">
+            <column name="customer_view" value="DELETING GITHUB FOR POLICY"/>
+            <where>name='DELETE_GITHUB_FOR_POLICY'</where>
+        </update>
+        <update tableName="tasks">
+            <column name="customer_view" value="DELETING GITHUB FOR INSTALLATION"/>
+            <where>name='DELETE_GITHUB_FOR_INSTALLATION'</where>
+        </update>
+        <update tableName="tasks">
+            <column name="customer_view" value="DELETING CUSTOMER DATABASE ENTRY"/>
+            <where>name='PURGE_CUSTOMER_DB_ENTRY'</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>

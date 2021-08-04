@@ -1,0 +1,11 @@
+spring:
+  liquibase:
+    enabled: true
+    change-log: classpath:db/liquibase-changelog.xml
+  kafka:
+    consumer:
+      auto-offset-reset: earliest
+      group-id: css
+test:
+  topic: embedded-test-topic
+licence_key: 1234567788899
